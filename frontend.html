@@ -1,0 +1,222 @@
+<!DOCTYPE html>\
+
+<html lang="en">
+<head>
+  <title>Code Learning Assistant</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: 
+        linear-gradient(to bottom right, #9776fa77, #39fff77b), 
+        url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1650&q=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 38px 0 0 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 2.7rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      margin-bottom: 8px;
+      text-align: center;
+      text-shadow: 0 10px 50px #0006, 0 1px 0 #444;
+      background: linear-gradient(90deg, #96faff, #8f5fff 50%, #39ffd2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: #eafcff;
+      margin-bottom: 25px;
+      font-size: 1.25rem;
+      text-shadow: 0 2px 12px #000a;
+    }
+    .container {
+      max-width: 850px;
+      width: 95%;
+      background: rgba(22, 37, 76, 0.90);
+      border-radius: 23px;
+      backdrop-filter: blur(8px) saturate(140%);
+      box-shadow: 0 8px 60px 0 #0099ffaa, 0 1.5px 25px #00e2fa33;
+      padding: 38px 38px 32px 38px;
+      position: relative;
+      border: 2.5px solid #88f9ff33;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60') center center / cover no-repeat;
+      opacity: 0.12;
+      z-index: 0;
+    }
+    .inner-content { position: relative; z-index: 1; }
+    .editor-label {
+      font-weight: 700;
+      color: #51e6e5;
+      letter-spacing: 1.2px;
+      font-size: 1.06rem;
+      margin-bottom: 12px;
+      text-shadow: 0 1px 6px #00ecb777;
+    }
+    .editor-bg {
+      background: linear-gradient(120deg, #151f3d 85%, #42ffd6 120%);
+      border-radius: 16px;
+      padding: 0;
+      margin-bottom: 25px;
+      position: relative;
+      min-height: 220px;
+      border: 2.2px solid #45e2ff44;
+      box-shadow: 0 2px 14px #4facfe55;
+    }
+    .editor-rainbow {
+      width: 100%;
+      min-height: 200px;
+      background: transparent;
+      border: none;
+      resize: vertical;
+      padding: 19px 22px;
+      font-family: 'Fira Mono', 'Courier New', monospace;
+      font-size: 17px;
+      color: #fff;
+      outline: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+      z-index: 1;
+      position: relative;
+    }
+    .editor-rainbow:empty:before {
+      content: attr(placeholder);
+      color: #77fcff66;
+    }
+    .editor-rainbow:focus { outline: none;}
+    /* === Rainbow Highlighted Text === */
+    .editor-rainbow .color-red { color: #ff5e66; }
+    .editor-rainbow .color-orange { color: #ffc669; }
+    .editor-rainbow .color-yellow { color: #fafb72; }
+    .editor-rainbow .color-green { color: #72ff7d; }
+    .editor-rainbow .color-blue { color: #6fd6ff;}
+    .editor-rainbow .color-purple { color: #a18fff;}
+    .editor-rainbow .color-pink { color: #fa8fff;}
+    .button-run {
+      display: inline-block;
+      margin-top: 2px;
+      padding: 14px 45px;
+      background: linear-gradient(92deg, #42ffd6 10%, #738bff 91%);
+      color: #18003a;
+      font-weight: 900;
+      border: none;
+      border-radius: 13px;
+      font-size: 17px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 26px #00edd788, 0 1.5px 14px #8f5fff99;
+      transition: background 0.2s, color 0.14s, box-shadow 0.20s;
+      z-index: 2;
+      position: relative;
+    }
+    .button-run:hover {
+      background: linear-gradient(88deg, #705cf6 10%, #39ffd2 91%);
+      color: #fff;
+      box-shadow: 0 8px  26px #39ffd288, 0 3px 19px #8f5fff88;
+      outline: 0.5px solid #42ffd6;
+    }
+    .output {
+      margin-top: 44px;
+      padding: 17px 19px;
+      background: linear-gradient(110deg, #1c1860 40%, #13f7ab11 100%);
+      border-left: 4px solid #4facfe;
+      border-radius: 17px;
+      min-height: 100px;
+      font-family: 'Fira Mono', 'Courier New', monospace;
+      font-size: 1.04rem;
+      color: #c8e7ff;
+      box-shadow: 0 3px 14px #00e4d066;
+      position: relative;
+      z-index: 2;
+    }
+    .footer {
+      margin-top: 50px;
+      font-size: 15px;
+      color: #e4eefe;
+      text-align: center;
+      text-shadow: 0 1.5px 6px #070044;
+      letter-spacing: 2.5px;
+    }
+    @media (max-width: 570px) {
+      .container { padding: 15px 2vw;}
+      h1 {font-size:2rem;}
+      .editor-rainbow {font-size: 14px;}
+    }
+  </style>
+  <!-- Fira Mono font for beautiful editor code -->
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Code Learning Assistant</h1>
+  <p class="subtitle">Practice coding, debug errors and improve your skills — in full color!</p>
+  <div class="container">
+    <div class="inner-content">
+      <label class="editor-label">Write your code below:</label>
+      <!-- Rainbow code editor using contenteditable -->
+      <div class="editor-bg">
+        <div class="editor-rainbow" id="rainbow-editor" contenteditable="true" spellcheck="false" placeholder="Type your code here..."></div>
+      </div>
+      <button class="button-run">Run Code</button>
+      <div class="output">
+        <em>Output will appear here…</em>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    © 2025 Code Learning Assistant Demo – Uniquely Yours
+  </div>
+  <script>
+    // Rainbow coloring of text while typing (simple demo)
+    document.getElementById('rainbow-editor').addEventListener('input', function(e) {
+      let value = this.textContent;
+
+      // Simple: color each word a different color in rainbow order (repeat)
+      const colors = ['color-red','color-orange','color-yellow','color-green','color-blue','color-purple','color-pink'];
+      let words = value.split(/(\s+)/); // keep spaces
+      let out = '';
+      let colorIndex = 0;
+      for(let word of words){
+        if(word.trim().length === 0) { out += word; continue;}
+        out += `<span class="${colors[colorIndex]}">${escapeHTML(word)}</span>`;
+        colorIndex = (colorIndex+1) % colors.length;
+      }
+      this.innerHTML = out;
+
+      // Move caret to end
+      placeCaretAtEnd(this);
+    });
+    function placeCaretAtEnd(el) {
+      el.focus();
+      if(typeof window.getSelection != "undefined"
+         && typeof document.createRange != "undefined"){
+        let range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        let sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+    function escapeHTML(str){
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
